@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.ejuravlev.tacocloud.models.TacoOrder;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.ejuravlev.tacocloud.repository.OrderRepository;
 
 
 @Slf4j
@@ -19,6 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/orders")
 @SessionAttributes("tacoOrder")
 public class OrderController {
+    private OrderRepository orderRepo;
+
+    public OrderController(OrderRepository orderRepo) {
+      this.orderRepo = orderRepo;
+    }
 
     @GetMapping("/current")
     public String orderForm() {
@@ -31,7 +37,7 @@ public class OrderController {
             log.error("invalid order model: {}", errors.toString());
             return "orderForm";
         }
-        log.info("Order submitted: {}", order);
+        orderRepo.save(order);
         sessionStatus.setComplete();
         return "redirect:/";
     }

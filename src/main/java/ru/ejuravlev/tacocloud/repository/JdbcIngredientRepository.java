@@ -13,7 +13,7 @@ import ru.ejuravlev.tacocloud.models.Ingredient;
 @Repository
 public class JdbcIngredientRepository implements IngredientRepository {
 
-  private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
 
   public JdbcIngredientRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -42,7 +42,7 @@ public class JdbcIngredientRepository implements IngredientRepository {
       id
     );
 
-    return results.size() == 0 ? Optional.empty() : Optional.of(results.get(0));
+    return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
   }
 
   @Override
@@ -51,7 +51,7 @@ public class JdbcIngredientRepository implements IngredientRepository {
       "insert into Ingredient (id, name, type) values (?, ?, ?)",
       ingredient.getId(),
       ingredient.getName(),
-      ingredient.getType().toString()
+        ingredient.getType()
     );
     return ingredient;
   }
